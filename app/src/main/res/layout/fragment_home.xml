@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bkhome"
+    tools:context=".MainActivity">
+
+    <!-- Welcome and Search Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/txtWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hi Wilson! 👋"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enjoy our services!"
+            android:textSize="14sp"
+            android:textColor="@color/black" />
+
+        <EditText
+            android:id="@+id/edtSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search here..."
+            android:drawableStart="@drawable/baseline_search_24"
+
+            android:padding="12dp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Free Consultation Banner -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#CFF2D0"
+        android:padding="16dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Free Consultation"
+            android:textStyle="bold"
+            android:textColor="@color/green1"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnCallNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Call Now"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="@color/green1" />
+        <ImageView
+            android:layout_marginStart="20dp"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:background="@drawable/contact_us"/>
+
+    </LinearLayout>
+
+    <!-- Featured Products -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Featured Products"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_margin="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+</LinearLayout>

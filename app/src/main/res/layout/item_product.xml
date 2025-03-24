@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:background="@drawable/card_bg"
+    android:padding="12dp"
+    android:gravity="center"
+    android:elevation="4dp">
+
+    <ImageView
+        android:id="@+id/imgProduct"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:contentDescription="Product Image"/>
+
+    <TextView
+        android:id="@+id/txtProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Product Name"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:paddingTop="6dp"/>
+
+    <TextView
+        android:id="@+id/txtProductPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="₹ Price"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:paddingTop="4dp"/>
+
+</LinearLayout>
