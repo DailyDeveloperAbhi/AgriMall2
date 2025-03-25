@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "421541206101",
+    "project_id": "agrimall2",
+    "storage_bucket": "agrimall2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421541206101:android:6f3e664e0180f50f481cdc",
+        "android_client_info": {
+          "package_name": "com.example.agrimall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCv8sU3r-W-rsGif-pNdFa9Gj2p3lkd4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
