@@ -13,7 +13,6 @@ import androidx.cardview.widget.CardView;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // UI Elements
     private EditText editTextEmail, editTextPassword;
     private Button btnLogin;
     private TextView txtSignUp;
