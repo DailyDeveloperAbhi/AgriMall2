@@ -13,12 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.auth.FirebaseAuthCredentialsProvider;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextPassword;
     private Button btnLogin;
     private TextView txtSignUp;
     private FirebaseAuth mAuth;  // Firebase Authentication instance
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

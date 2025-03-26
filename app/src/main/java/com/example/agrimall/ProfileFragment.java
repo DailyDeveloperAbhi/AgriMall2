@@ -1,13 +1,19 @@
 package com.example.agrimall;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import java.io.IOException;
 
 public class ProfileFragment extends Fragment {
 
@@ -23,6 +30,8 @@ public class ProfileFragment extends Fragment {
     private ImageView profileImage;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -58,7 +67,30 @@ public class ProfileFragment extends Fragment {
             });
         }
 
-        // Logout Button Click Listener
+        // ✅ Image Picker Launcher (Modern way)
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null && data.getData() != null) {
+                            Uri imageUri = data.getData();
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
+                                profileImage.setImageBitmap(bitmap);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+        );
+
+        // ✅ ImageView Click to Pick Image
+        profileImage.setClickable(true);
+        profileImage.setOnClickListener(v -> openImagePicker());
+
+        // ✅ Logout
         btnLogout.setOnClickListener(v -> {
             mAuth.signOut();
             startActivity(new Intent(getActivity(), LoginActivity.class));
@@ -67,5 +99,10 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
-}
 
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        imagePickerLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+    }
+}
