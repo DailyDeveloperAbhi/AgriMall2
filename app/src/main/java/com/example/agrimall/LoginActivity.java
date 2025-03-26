@@ -2,26 +2,32 @@ package com.example.agrimall;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // UI Elements
     private EditText editTextEmail, editTextPassword;
     private Button btnLogin;
     private TextView txtSignUp;
+    private FirebaseAuth mAuth;  // Firebase Authentication instance
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
         // Initialize UI Elements
         editTextEmail = findViewById(R.id.editTextEmail);
@@ -32,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         // Login Button Click Listener
         btnLogin.setOnClickListener(view -> handleLogin());
 
-
         // Sign Up Text Click Listener
         txtSignUp.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
@@ -40,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // Login Logic
+    // Login Logic with Firebase Authentication
     private void handleLogin() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
@@ -50,14 +55,29 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Simple mock login logic (replace this with database logic later)
-        if (email.equals("admin@agrimall.com") && password.equals("admin123")) {
-            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
-            finish();  // Close LoginActivity after successful login
-        } else {
-            Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+        // Firebase authentication
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Authentication Failed! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is already logged in, go to HomeActivity
+            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+            finish();
         }
     }
+
 }
