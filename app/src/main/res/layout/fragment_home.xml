@@ -8,17 +8,29 @@
     android:background="@drawable/bkhome"
     tools:context=".MainActivity">
 
+    <!-- Toolbar for Menu at the Top -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/green1"
+        app:title="Agri Mart"
+        app:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <!-- Welcome and Search Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
+
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
+
         <TextView
             android:id="@+id/txtWelcome"
             android:layout_width="wrap_content"
@@ -40,7 +52,6 @@
             android:layout_height="wrap_content"
             android:hint="Search here..."
             android:drawableStart="@drawable/baseline_search_24"
-
             android:padding="12dp"
             android:layout_marginTop="8dp" />
     </LinearLayout>
@@ -68,12 +79,12 @@
             android:text="Call Now"
             android:layout_marginStart="16dp"
             android:backgroundTint="@color/green1" />
+
         <ImageView
             android:layout_marginStart="20dp"
             android:layout_width="70dp"
             android:layout_height="50dp"
-            android:background="@drawable/contact_us"/>
-
+            android:background="@drawable/contact_us" />
     </LinearLayout>
 
     <!-- Featured Products -->
@@ -90,6 +101,5 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
 
 </LinearLayout>
