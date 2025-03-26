@@ -28,4 +28,9 @@ public class Product {
 
     public void increaseQuantity() {
     }
+
+    public int getImageUrl() {
+        return imageResource;
+    }
+
 }
