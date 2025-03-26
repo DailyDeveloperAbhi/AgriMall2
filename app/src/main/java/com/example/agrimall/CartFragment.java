@@ -26,6 +26,7 @@ public class CartFragment extends Fragment {
     private TextView tvTotalPrice;
     private Button btnCheckout;
     private List<Product> cartItemList;
+    int total = 0;
 
     @Nullable
     @Override
@@ -56,11 +57,12 @@ public class CartFragment extends Fragment {
             if (cartItemList.isEmpty()) {
                 Toast.makeText(getContext(), "Cart is empty!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show();
-                CartManager.clearCart();
-                cartItemList.clear();
-                cartAdapter.notifyDataSetChanged();
-                calculateTotal(); // ✅ Refresh total after checkout
+                // Proceed to checkout
+                Intent i = new Intent(requireContext(), CheckoutActivity.class);
+                i.putExtra("TOTAL_PRICE",total);
+                startActivity(i);
+
+                Toast.makeText(getContext(), "Redirecting to checkout...", Toast.LENGTH_SHORT).show();
             }
         });
         cartAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -75,9 +77,9 @@ public class CartFragment extends Fragment {
 
     // Calculate total cart price correctly
     private void calculateTotal() {
-        int total = 0;
+
         for (Product product : cartItemList) {
-            total += product.getPrice() * product.getQuantity();  // ✅ Correct calculation
+            total += product.getPrice();  // ✅ Correct calculation
         }
         tvTotalPrice.setText("Total: ₹" + total);
     }
