@@ -30,7 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CheckoutActivity extends AppCompatActivity {
 
     private Button btnPayNow;
-    private final String UPI_ID = "abhishekwarankar185@okicici"; // Replace with your UPI ID
+    private final String UPI_ID = "8421726034@ybl"; // Replace with your UPI ID
     private final String PAYEE_NAME = "AgriMall";
     private final String TRANSACTION_NOTE = "Payment for AgriMall order";
     private  String AMOUNT = "500"; // Example amount (₹500)
