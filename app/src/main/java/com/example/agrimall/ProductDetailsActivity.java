@@ -2,12 +2,12 @@ package com.example.agrimall;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.bumptech.glide.Glide;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
@@ -31,18 +31,21 @@ public class ProductDetailsActivity extends AppCompatActivity {
         String productName = intent.getStringExtra("productName");
         String productPrice = intent.getStringExtra("productPrice");
         String productDescription = intent.getStringExtra("productDescription");
-        int productImage = intent.getIntExtra("productImage", R.drawable.ic_launcher_background);
+        String productImage = intent.getStringExtra("productImage"); // Now handling as String (URL)
 
         // Set data in views
-        imgProduct.setImageResource(productImage);
         txtProductName.setText(productName);
         txtProductPrice.setText("₹ " + productPrice);
         txtProductDescription.setText(productDescription);
 
+        // ✅ Load image from URL instead of resource ID
+        Glide.with(this)
+                .load(productImage)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .into(imgProduct);
+
         btnAddToCart.setOnClickListener(v -> {
-            int productQuantity = 1;
-            Product selectedProduct = new Product(productName, (int) Double.parseDouble(productPrice), productDescription, productImage,productQuantity);
-            CartManager.addToCart(selectedProduct);
             Toast.makeText(ProductDetailsActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
         });
     }

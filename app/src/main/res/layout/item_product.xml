@@ -1,39 +1,31 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="8dp"
-    android:background="@drawable/card_bg"
-    android:padding="12dp"
-    android:gravity="center"
-    android:elevation="4dp">
+    android:padding="10dp"
+    android:background="@android:color/white">
 
     <ImageView
-        android:id="@+id/imgProduct"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:scaleType="fitCenter"
-        android:contentDescription="Product Image"/>
+        android:id="@+id/product_image"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"/>
 
     <TextView
-        android:id="@+id/txtProductName"
+        android:id="@+id/product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Product Name"
-        android:textStyle="bold"
         android:textSize="16sp"
-        android:gravity="center"
-        android:paddingTop="6dp"/>
+        android:textStyle="bold"
+        android:paddingTop="5dp"/>
 
     <TextView
-        android:id="@+id/txtProductPrice"
+        android:id="@+id/product_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="₹ Price"
-        android:textColor="@android:color/holo_green_dark"
+        android:text="₹Price"
         android:textSize="14sp"
-        android:gravity="center"
-        android:paddingTop="4dp"/>
-
+        android:textColor="@color/green1"/>
 </LinearLayout>

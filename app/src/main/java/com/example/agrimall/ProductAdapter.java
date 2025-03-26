@@ -1,67 +1,94 @@
 package com.example.agrimall;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     private List<Product> productList;
+    private OnProductClickListener onProductClickListener;
 
-    public ProductAdapter(List<Product> productList) {
+    // Constructor
+    public ProductAdapter(List<Product> productList, OnProductClickListener onProductClickListener) {
         this.productList = productList;
+        this.onProductClickListener = onProductClickListener;
     }
 
     @NonNull
     @Override
-    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_product, parent, false);
-        return new ProductViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product product = productList.get(position);
+        holder.productName.setText(product.getName());
+        holder.productPrice.setText("₹" + product.getPrice());
+       // holder.productDescription.setText(product.getDescription());
 
-        holder.txtProductName.setText(product.getName());
-        holder.txtProductPrice.setText("₹ " + product.getPrice());
-        holder.imgProduct.setImageResource(product.getImageResource());
+        Glide.with(holder.itemView.getContext())
+                .load(product.getImageUrl())
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .into(holder.productImage);
 
-        // Click listener to open ProductDetailsActivity
-        holder.itemView.setOnClickListener(v -> {
+        // ✅ Make the Image Clickable → Redirect to ProductDetailsActivity
+        holder.productImage.setOnClickListener(v -> {
             Intent intent = new Intent(holder.itemView.getContext(), ProductDetailsActivity.class);
-
-            // Pass data via Intent
             intent.putExtra("productName", product.getName());
             intent.putExtra("productPrice", String.valueOf(product.getPrice()));
             intent.putExtra("productDescription", product.getDescription());
-            intent.putExtra("productImage", product.getImageResource()); // If using drawable
-
+            intent.putExtra("productImage", product.getImageUrl()); // Passing URL instead of int
             holder.itemView.getContext().startActivity(intent);
         });
+
+        // ✅ Make "Add to Cart" Button Clickable
+        if (holder.btnAddToCart != null) {
+            holder.btnAddToCart.setOnClickListener(v -> {
+                if (onProductClickListener != null) {
+                    onProductClickListener.onAddToCart(product);
+                }
+            });
+        }
     }
+
 
     @Override
     public int getItemCount() {
         return productList.size();
     }
 
-    public static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView txtProductName, txtProductPrice;
-        ImageView imgProduct;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView productName, productPrice, productDescription;
+        ImageView productImage;
+        Button btnAddToCart;
 
-        public ProductViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            txtProductName = itemView.findViewById(R.id.txtProductName);
-            txtProductPrice = itemView.findViewById(R.id.txtProductPrice);
-            imgProduct = itemView.findViewById(R.id.imgProduct);
+            productName = itemView.findViewById(R.id.product_name);
+            productPrice = itemView.findViewById(R.id.product_price);
+            //productDescription = itemView.findViewById(R.id.product_description);
+            productImage = itemView.findViewById(R.id.product_image);
+            btnAddToCart = itemView.findViewById(R.id.btnAddToCart); // Ensure this exists in item_product.xml
         }
+    }
+
+    // ✅ Define the Interface for Click Events
+    public interface OnProductClickListener {
+        void onProductClick(Product product);
+        void onAddToCart(Product product);
     }
 }

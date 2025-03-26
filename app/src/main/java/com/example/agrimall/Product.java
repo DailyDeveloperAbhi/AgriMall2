@@ -3,34 +3,22 @@ package com.example.agrimall;
 public class Product {
     private String name;
     private double price;
-    private int quantity;
     private String description;
-    private int imageResource;
+    private String imageUrl;
 
-    // Constructor
-    public Product(String name, double price, String description, int imageResource,int quantity) {
+    public Product(String productName, int i, String productDescription, int productImage, int productQuantity) {
+        // Empty constructor needed for Firestore
+    }
+
+    public Product(String name, double price, String description, String imageUrl) {
         this.name = name;
         this.price = price;
         this.description = description;
-        this.imageResource = imageResource;
+        this.imageUrl = imageUrl;
     }
 
-    // Getters
     public String getName() { return name; }
     public double getPrice() { return price; }
     public String getDescription() { return description; }
-    public int getImageResource() { return imageResource; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-
-    public void decreaseQuantity() {
-    }
-
-    public void increaseQuantity() {
-    }
-
-    public int getImageUrl() {
-        return imageResource;
-    }
-
+    public String getImageUrl() { return imageUrl; }
 }
