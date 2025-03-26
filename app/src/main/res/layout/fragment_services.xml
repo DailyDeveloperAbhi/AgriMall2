@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Services Title -->
     <TextView
         android:id="@+id/tv_services_title"
         android:layout_width="match_parent"
@@ -16,11 +17,12 @@
         android:gravity="center"
         android:paddingBottom="16dp"/>
 
-    <!-- Sample Service List -->
+    <!-- ListView for Services -->
     <ListView
         android:id="@+id/list_view_services"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:dividerHeight="8dp"/>
-
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="8dp"
+        android:padding="5dp"/>
 </LinearLayout>
