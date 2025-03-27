@@ -18,4 +18,5 @@
         android:title="Settings"
         android:icon="@drawable/bkdetail"
         app:showAsAction="never" />
+
 </menu>
