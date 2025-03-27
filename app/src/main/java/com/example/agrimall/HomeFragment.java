@@ -1,10 +1,13 @@
 package com.example.agrimall;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +29,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private List<Product> productList;
+    Button b;
     private FirebaseFirestore db;
 
     @Override
@@ -42,6 +46,13 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
         recyclerView.setAdapter(productAdapter);
 
         loadProductsFromFirestore();
+
+        view.findViewById(R.id.btnCallNow).setOnClickListener(v->{
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:+918421726034"));
+            startActivity(intent);
+        });
+
         return view;
     }
 
@@ -95,4 +106,8 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
 
         Navigation.findNavController(getView()).navigate(R.id.action_homeFragment_to_cartFragment, bundle);
     }
+
+
+
+
 }
