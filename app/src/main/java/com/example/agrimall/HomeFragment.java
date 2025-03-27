@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private List<Product> productList;
-    Button b;
+    Button btn;
     private FirebaseFirestore db;
 
     @Override
