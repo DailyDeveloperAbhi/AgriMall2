@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
 
         db = FirebaseFirestore.getInstance();
         productList = new ArrayList<>();
-        productAdapter = new ProductAdapter(productList, this);
+        productAdapter = new ProductAdapter(productList);
         recyclerView.setAdapter(productAdapter);
 
         loadProductsFromFirestore();

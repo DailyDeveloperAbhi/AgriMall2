@@ -1,7 +1,6 @@
 package com.example.agrimall;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.List;
@@ -20,7 +18,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private OnProductClickListener onProductClickListener;
 
     // Constructor
-    public ProductAdapter(List<Product> productList, OnProductClickListener onProductClickListener) {
+    public ProductAdapter(List<Product> productList) {
         this.productList = productList;
         this.onProductClickListener = onProductClickListener;
     }
@@ -69,6 +67,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public int getItemCount() {
         return productList.size();
+    }
+
+    public void updateList(List<Product> filteredList) {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
