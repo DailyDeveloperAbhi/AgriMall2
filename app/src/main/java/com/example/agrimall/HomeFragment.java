@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
 
                     Log.d("FirestoreData", "Product: " + name + " | Image: " + imageUrl);
 
-                    productList.add(new Product(name, price, description, imageUrl));
+                    productList.add(new Product(name, (int) price, description, imageUrl));
                 }
                 productAdapter.notifyDataSetChanged();
             }
@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
     public void onProductClick(Product product) {
         Bundle bundle = new Bundle();
         bundle.putString("name", product.getName());
-        bundle.putDouble("price", product.getPrice());
+        bundle.putInt("price", product.getPrice());
         bundle.putString("description", product.getDescription());
         bundle.putString("imageURL", product.getImageUrl());
 

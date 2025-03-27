@@ -2,7 +2,7 @@ package com.example.agrimall;
 
 public class Product {
     private String name;
-    private double price;
+    private int price;
     private String description;
     private String imageUrl;
 
@@ -10,7 +10,7 @@ public class Product {
         // Empty constructor needed for Firestore
     }
 
-    public Product(String name, double price, String description, String imageUrl) {
+    public Product(String name, int price, String description, String imageUrl) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -18,7 +18,14 @@ public class Product {
     }
 
     public String getName() { return name; }
-    public double getPrice() { return price; }
+    public int getPrice() { return price; }
     public String getDescription() { return description; }
     public String getImageUrl() { return imageUrl; }
+
+    public int getQuantity() {
+        return getQuantity();
+    }
+
+    public void decreaseQuantity() {
+    }
 }

@@ -1,30 +1,25 @@
 package com.example.agrimall;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
     private Context context;
-    private List<Product> cartItems;
+    private List<Product> cartItemList;
 
-    public CartAdapter(Context context,List<Product> cartItems) {
+    public CartAdapter(Context context, List<Product> cartItemList) {
         this.context = context;
-        this.cartItems = cartItems;
+        this.cartItemList = cartItemList;
     }
 
     @NonNull
@@ -36,42 +31,30 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        Product product = cartItems.get(position);
+        Product product = cartItemList.get(position);
 
-        holder.tvName.setText(product.getName());
-        holder.tvPrice.setText("₹ " + product.getPrice());
-
-
+        holder.txtProductName.setText(product.getName());
+        holder.txtProductPrice.setText("₹" + product.getPrice());
 
 
-        // Remove Item
-        holder.btnRemove.setOnClickListener(v -> {
-            Log.d("CartAdapter", "Removing item at position: " + position);
-
-            CartManager.removeItem(product);
-
-            cartItems.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, cartItems.size());
-        });
     }
 
     @Override
     public int getItemCount() {
-        return cartItems.size();
+        return cartItemList.size();
     }
 
-    // ViewHolder Class
     public static class CartViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvPrice, tvQuantity;
-        ImageView ivProduct;
-        Button btnIncrease, btnDecrease, btnRemove;
+        TextView txtProductName, txtProductPrice, txtProductDescription;
+        ImageView imgProduct;
+        Button btnRemove;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvName = itemView.findViewById(R.id.tvName);
-            tvPrice = itemView.findViewById(R.id.tvPrice);
-            btnRemove = itemView.findViewById(R.id.btnRemove);
+            txtProductName = itemView.findViewById(R.id.txtProductName);
+            txtProductPrice = itemView.findViewById(R.id.txtProductPrice);
+            txtProductDescription = itemView.findViewById(R.id.txtProductDescription);
+            imgProduct = itemView.findViewById(R.id.imgProduct);
         }
     }
 }

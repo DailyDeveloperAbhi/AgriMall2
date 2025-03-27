@@ -33,6 +33,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         String productDescription = intent.getStringExtra("productDescription");
         String productImage = intent.getStringExtra("productImage"); // Now handling as String (URL)
 
+        int price= Integer.parseInt(String.valueOf(productPrice));
         // Set data in views
         txtProductName.setText(productName);
         txtProductPrice.setText("₹ " + productPrice);
@@ -46,7 +47,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 .into(imgProduct);
 
         btnAddToCart.setOnClickListener(v -> {
-            Toast.makeText(ProductDetailsActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+            Product product = new Product(productName, price, productDescription, productImage);
+            CartManager.addToCart(product);
+            Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
         });
     }
 }
