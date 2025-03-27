@@ -1,138 +1,175 @@
-<ScrollView
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <!-- Main Content -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="#F5F5F5">
 
-        <!-- Green Header -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@color/green"
-            android:padding="20dp">
-
-            <TextView
-                android:id="@+id/txtProfileTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="MY PROFILE"
-                android:textSize="18sp"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_centerHorizontal="true"/>
-
-            <!-- Profile Picture -->
-            <ImageView
-                android:id="@+id/profileImage"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerInParent="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/user"
-                android:background="@drawable/circle_background"/>
-
-        </RelativeLayout>
-
-        <!-- User Info -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:background="#FFFFFF"
-            android:elevation="6dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textViewUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Michael Schaeffer"
-                android:textSize="22sp"
-                android:textColor="#000"
-                android:textStyle="bold"
-                android:layout_gravity="center"/>
+            <!-- Toolbar -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/green1"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:title="My Profile"
+                android:titleTextColor="@android:color/white" />
 
-            <TextView
-                android:id="@+id/textViewUserEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="michael@email.com"
-                android:textSize="16sp"
-                android:textColor="#757575"
-                android:layout_gravity="center"/>
-        </LinearLayout>
+            <!-- Header -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@color/green1"
+                android:padding="20dp">
 
-        <!-- Profile Sections -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFFFFF"
-            android:padding="20dp"
-            android:elevation="6dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:background="@drawable/rounded_header"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"/>
 
+                <TextView
+                    android:id="@+id/txtProfileTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MY PROFILE"
+                    android:textSize="20sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"/>
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="20dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/user"
+                    android:background="@drawable/circle_border"
+                    android:padding="3dp"/>
+            </RelativeLayout>
+
+            <!-- Profile Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="15dp">
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="20dp"
+                android:layout_margin="16dp"
+                android:elevation="8dp"
+                android:clipToPadding="false">
 
                 <TextView
-                    android:text="User Details"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
+                    android:id="@+id/textViewUserName"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"/>
+                    android:text="Michael Schaeffer"
+                    android:textSize="24sp"
+                    android:textColor="#212121"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"/>
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/services"/>
+                <TextView
+                    android:id="@+id/textViewUserEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="michael@email.com"
+                    android:textSize="16sp"
+                    android:textColor="#757575"
+                    android:layout_marginTop="4dp"
+                    android:layout_gravity="center"/>
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"/>
-
+            <!-- Profile Sections -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="15dp">
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="16dp"
+                android:layout_marginHorizontal="16dp"
+                android:elevation="4dp">
 
-                <TextView
-                    android:text="Farm Details"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"/>
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/services"/>
+                    <TextView
+                        android:text="User Details"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_weight="1" android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"/>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/services"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:text="Farm Details"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                         android:layout_width="wrap_content"/>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/services"/>
+                </LinearLayout>
             </LinearLayout>
 
+            <!-- Logout Button -->
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Logout"
+                android:backgroundTint="@color/red"
+                android:textColor="#FFF"
+                android:layout_margin="24dp"
+                android:background="@drawable/rounded_button"/>
         </LinearLayout>
+    </ScrollView>
 
-        <!-- Logout Button -->
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Logout"
-            android:backgroundTint="#D32F2F"
-            android:textColor="#FFF"
-            android:layout_margin="20dp"/>
-    </LinearLayout>
-
-</ScrollView>
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/activity_nav_header"
+        app:menu="@menu/menu_main" />
+</androidx.drawerlayout.widget.DrawerLayout>
