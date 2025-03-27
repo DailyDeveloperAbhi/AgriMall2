@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     implementation("com.google.android.material:material:1.11.0")
@@ -56,6 +57,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
     implementation( "com.google.gms:google-services:4.3.10")
+    implementation("com.squareup.picasso:picasso:2.71828")
+
 
 
 }
