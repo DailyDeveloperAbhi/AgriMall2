@@ -85,6 +85,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             btnAddToCart = itemView.findViewById(R.id.btnAddToCart); // Ensure this exists in item_product.xml
         }
     }
+    public void updateList(List<Product> newList) {
+        productList.clear();  // Clear the current list
+        productList.addAll(newList); // Add new filtered list
+        notifyDataSetChanged(); // Refresh RecyclerView
+    }
 
     // ✅ Define the Interface for Click Events
     public interface OnProductClickListener {
