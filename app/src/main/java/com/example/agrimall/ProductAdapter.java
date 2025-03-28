@@ -18,7 +18,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private OnProductClickListener onProductClickListener;
 
     // Constructor
-    public ProductAdapter(List<Product> productList) {
+    public ProductAdapter(List<Product> productList, HomeFragment homeFragment) {
         this.productList = productList;
         this.onProductClickListener = onProductClickListener;
     }
