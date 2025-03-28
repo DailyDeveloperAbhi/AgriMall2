@@ -108,6 +108,13 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Show welcome notification when the fragment loads
+        Toast.makeText(getContext(), "Welcome to our AgriMall!", Toast.LENGTH_LONG).show();
+    }
+
     // Open URL in a browser or respective app
     private void openUrl(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
