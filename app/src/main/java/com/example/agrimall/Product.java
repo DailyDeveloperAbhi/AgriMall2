@@ -23,9 +23,7 @@ public class Product {
     public String getImageUrl() { return imageUrl; }
 
     public int getQuantity() {
-        return getQuantity();
+        return 1;
     }
 
-    public void decreaseQuantity() {
-    }
 }

@@ -1,29 +1,32 @@
 package com.example.agrimall;
 
 public class CartItem {
-    private String name;
-    private double price;
-    private String imageUrl;
+    private String productName;
+    private double productPrice;
     private int quantity;
+    private String url;
 
-    public CartItem(String name, double price, String imageUrl, int quantity) {
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-        this.quantity = quantity;
+    public CartItem(Product  product) {
+        this.productName = product.getName();;
+        this.productPrice = product.getPrice();
+        this.quantity = product.getQuantity();
+        this.url = product.getImageUrl();
     }
 
-    public String getName() {
-        return name;
+    public String getProductName() {
+        return productName;
     }
 
-    public double getPrice() {
-        return price;
+
+    public String getProductImage() {  // ✅ Add this method
+        return url;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public double getProductPrice() {
+        return productPrice;
     }
+
+
 
     public int getQuantity() {
         return quantity;
@@ -31,5 +34,9 @@ public class CartItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public double getTotalPrice() {
+        return productPrice * quantity;
     }
 }

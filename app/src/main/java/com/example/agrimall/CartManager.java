@@ -1,32 +1,67 @@
 package com.example.agrimall;
 
-import com.example.agrimall.Product;
-
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
 
 public class CartManager {
+    private static CartManager instance;
+    private List<CartItem> cartItems;
 
-    // List to store cart items
-    private static final List<Product> cartItems = new ArrayList<>();
-
-    // Add product to cart
-    public static void addToCart(Product product) {
-        cartItems.add(product);
+    private CartManager() {  // ✅ Constructor should be private (Singleton)
+        cartItems = new ArrayList<>();
     }
 
-    // Get all cart items
-    public static List<Product> getCartItems() {
-        return new ArrayList<>(cartItems); // Return a copy to avoid modifying original list
+    public static CartManager getInstance() {
+        if (instance == null) {
+            instance = new CartManager();
+        }
+        return instance;
     }
 
-    // Remove item from cart
-    public static void removeItem(Product product) {
-        cartItems.remove(product);
+    public List<CartItem> getCartItems() {
+        return cartItems;
     }
 
-    // Clear the entire cart
-    public static void clearCart() {
-        cartItems.clear();
+    public void addToCart(Product product) {
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getProductName().equals(product.getName())) {
+                cartItem.setQuantity(cartItem.getQuantity() + 1);  // ✅ Increase quantity if exists
+                Log.d("CartManager", "Increased quantity: " + cartItem.getProductName());
+                return;
+            }
+        }
+        CartItem newItem = new CartItem(product);
+        cartItems.add(newItem);
+        Log.d("CartManager", "Added to cart: " + newItem.getProductName());
+    }
+
+    public void removeItem(CartItem item) {
+        cartItems.remove(item);
+        Log.d("CartManager", "Removed from cart: " + item.getProductName());
+    }
+
+    public void increaseQuantity(CartItem item) {
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getProductName().equals(item.getProductName())) {
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
+                Log.d("CartManager", "Increased quantity: " + cartItem.getProductName());
+                return;
+            }
+        }
+    }
+
+    public void decreaseQuantity(CartItem item) {
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getProductName().equals(item.getProductName())) {
+                if (cartItem.getQuantity() > 1) {
+                    cartItem.setQuantity(cartItem.getQuantity() - 1);
+                    Log.d("CartManager", "Decreased quantity: " + cartItem.getProductName());
+                } else {
+                    removeItem(cartItem);
+                }
+                return;
+            }
+        }
     }
 }
