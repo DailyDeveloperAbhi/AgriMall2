@@ -88,8 +88,8 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_weight="1"
-                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
                 <ImageView
                     android:layout_width="24dp"
@@ -133,6 +133,45 @@
             android:backgroundTint="#D32F2F"
             android:textColor="#FFF"
             android:layout_margin="20dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv"
+            android:text="Connect With Us"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-black"
+            android:layout_marginBottom="10sp"/>
+
+        <!-- Follow Us Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#FFFFFF"
+            android:padding="20dp"
+            android:gravity="center"
+            android:elevation="6dp">
+
+            <!-- WhatsApp Button -->
+
+            <ImageView
+                android:id="@+id/btnWhatsApp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/baseline_whatsapp_24"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="WhatsApp"/>
+
+            <!-- Instagram Button -->
+            <ImageView
+                android:id="@+id/btnInstagram"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/instagram"
+                android:contentDescription="Instagram"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>

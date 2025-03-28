@@ -25,8 +25,6 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-import com.google.firebase.firestore.SetOptions;
-
 
 import java.util.HashMap;
 
@@ -34,7 +32,7 @@ public class ProfileFragment extends Fragment {
 
     private TextView textViewUserName, textViewUserEmail;
     private Button btnLogout;
-    private ImageView profileImage;
+    private ImageView profileImage, btnWhatsApp, btnInstagram;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
@@ -58,6 +56,8 @@ public class ProfileFragment extends Fragment {
         textViewUserEmail = view.findViewById(R.id.textViewUserEmail);
         profileImage = view.findViewById(R.id.profileImage);
         btnLogout = view.findViewById(R.id.btnLogout);
+        btnWhatsApp = view.findViewById(R.id.btnWhatsApp);
+        btnInstagram = view.findViewById(R.id.btnInstagram);
 
         // Get current user
         FirebaseUser user = mAuth.getCurrentUser();
@@ -91,7 +91,28 @@ public class ProfileFragment extends Fragment {
             getActivity().finish();
         });
 
+        // WhatsApp Click Event
+        btnWhatsApp.setOnClickListener(v -> {
+            String phoneNumber = "7499876327"; // Replace with your WhatsApp number
+            String url = "https://wa.me/" + phoneNumber;
+            openUrl(url);
+        });
+
+        // Instagram Click Event
+        btnInstagram.setOnClickListener(v -> {
+            String instagramUsername = "chaitanya_bodkhe_45_ "; // Replace with your Instagram username
+            String url = "https://www.instagram.com/" + instagramUsername;
+            openUrl(url);
+        });
+
         return view;
+    }
+
+    // Open URL in a browser or respective app
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 
     // Open gallery
