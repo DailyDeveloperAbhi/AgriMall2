@@ -69,7 +69,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         return productList.size();
     }
 
-    public void updateList(List<Product> filteredList) {
+    public void updateList(List<Product> newList) {
+        productList.clear();  // Clear the existing list
+        productList.addAll(newList); // Add the new filtered list
+        notifyDataSetChanged(); // Refresh RecyclerView
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -85,11 +88,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             productImage = itemView.findViewById(R.id.product_image);
             btnAddToCart = itemView.findViewById(R.id.btnAddToCart); // Ensure this exists in item_product.xml
         }
-    }
-    public void updateList(List<Product> newList) {
-        productList.clear();  // Clear the current list
-        productList.addAll(newList); // Add new filtered list
-        notifyDataSetChanged(); // Refresh RecyclerView
     }
 
     // ✅ Define the Interface for Click Events
