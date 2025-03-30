@@ -1,6 +1,5 @@
 package com.example.agrimall;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,48 +12,65 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
+    private List<CartItem> cartItems;
+    private CartItemListener listener;
 
-    private Context context;
-    private List<Product> cartItemList;
-
-    public CartAdapter(Context context, List<Product> cartItemList) {
-        this.context = context;
-        this.cartItemList = cartItemList;
+    public CartAdapter(List<CartItem> cartItems, CartItemListener listener) {
+        this.cartItems = cartItems;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.cart_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_item, parent, false);
         return new CartViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        Product product = cartItemList.get(position);
+        CartItem item = cartItems.get(position);
+        holder.txtProductName.setText(item.getProductName());
+        holder.txtProductPrice.setText("₹" + item.getProductPrice());
+        holder.txtQuantity.setText(String.valueOf(item.getQuantity()));
 
-        holder.txtProductName.setText(product.getName());
-        holder.txtProductPrice.setText("₹" + product.getPrice());
+        // ✅ Load Image with Glide
+        Glide.with(holder.itemView.getContext())
+                .load(item.getProductImage())  // Ensure this URL is correct
+                .placeholder(R.drawable.placeholder)  // Add a placeholder image
+                .error(R.drawable.placeholder)  // Add an error fallback image
+                .into(holder.imgProduct);  // Set image in ImageView
 
-
+        holder.btnIncrease.setOnClickListener(v -> listener.onIncreaseQuantity(item));
+        holder.btnDecrease.setOnClickListener(v -> listener.onDecreaseQuantity(item));
+        holder.btnRemove.setOnClickListener(v -> listener.onRemoveItem(item));
     }
 
     @Override
     public int getItemCount() {
-        return cartItemList.size();
+        return cartItems.size();
     }
 
     public static class CartViewHolder extends RecyclerView.ViewHolder {
-        TextView txtProductName, txtProductPrice, txtProductDescription;
+        TextView txtProductName, txtProductPrice, txtQuantity;
         ImageView imgProduct;
-        Button btnRemove;
+        Button btnIncrease, btnDecrease, btnRemove;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
             txtProductName = itemView.findViewById(R.id.txtProductName);
             txtProductPrice = itemView.findViewById(R.id.txtProductPrice);
-            txtProductDescription = itemView.findViewById(R.id.txtProductDescription);
-            imgProduct = itemView.findViewById(R.id.imgProduct);
+            txtQuantity = itemView.findViewById(R.id.txtQuantity);
+            imgProduct = itemView.findViewById(R.id.imgProduct); // ✅ Ensure this matches your cart_item.xml
+            btnIncrease = itemView.findViewById(R.id.btnIncrease);
+            btnDecrease = itemView.findViewById(R.id.btnDecrease);
+            btnRemove = itemView.findViewById(R.id.btnRemove);
         }
+    }
+
+    public interface CartItemListener {
+        void onIncreaseQuantity(CartItem item);
+        void onDecreaseQuantity(CartItem item);
+        void onRemoveItem(CartItem item);
     }
 }

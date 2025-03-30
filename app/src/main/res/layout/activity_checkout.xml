@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,45 +8,90 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/tv_total_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total: ₹ 0"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- User Details -->
-        <EditText
-            android:id="@+id/et_name"
-            android:hint="Full Name"
+        <!-- Total Price Card -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"/>
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/bg_card"
+            android:elevation="4dp"
+            android:layout_marginBottom="16dp">
 
-        <EditText
-            android:id="@+id/et_phone"
-            android:hint="Phone Number"
+            <TextView
+                android:id="@+id/tv_total_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total: ₹ 0"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:padding="8dp"/>
+        </LinearLayout>
+
+        <!-- User Details Card -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="phone"/>
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/bg_card"
+            android:elevation="4dp">
 
-        <EditText
-            android:id="@+id/et_address"
-            android:hint="Delivery Address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPostalAddress"
-            android:lines="3"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delivery Details"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="8dp"/>
 
+            <EditText
+                android:id="@+id/et_name"
+                android:hint="Full Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:background="@drawable/bg_input"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/et_phone"
+                android:hint="Phone Number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:background="@drawable/bg_input"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/et_address"
+                android:hint="Delivery Address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress"
+                android:background="@drawable/bg_input"
+                android:padding="12dp"
+                android:minLines="3"
+                android:maxLines="5"/>
+        </LinearLayout>
+
+        <!-- Place Order Button -->
         <Button
             android:id="@+id/btn_place_order"
             android:text="Place Order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="20dp"
+            android:padding="12dp"
+            android:textSize="18sp"
+            android:background="@drawable/bg_button"
+            android:textColor="@color/white"/>
     </LinearLayout>
 </ScrollView>

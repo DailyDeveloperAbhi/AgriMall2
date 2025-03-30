@@ -159,7 +159,7 @@
                 android:id="@+id/btnWhatsApp"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/baseline_whatsapp_24"
+                android:src="@drawable/common_full_open_on_phone"
                 android:layout_marginEnd="20dp"
                 android:contentDescription="WhatsApp"/>
 

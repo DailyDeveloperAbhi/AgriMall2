@@ -29,14 +29,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
         // Get data from Intent
         Intent intent = getIntent();
         String productName = intent.getStringExtra("productName");
-        String productPrice = intent.getStringExtra("productPrice");
+        String productPriceStr = intent.getStringExtra("productPrice"); // String Price
         String productDescription = intent.getStringExtra("productDescription");
-        String productImage = intent.getStringExtra("productImage"); // Now handling as String (URL)
+        String productImage = intent.getStringExtra("productImage");
 
-        int price= Integer.parseInt(String.valueOf(productPrice));
+        // Convert price string to int
+        int price = Integer.parseInt(productPriceStr);
+
         // Set data in views
         txtProductName.setText(productName);
-        txtProductPrice.setText("₹ " + productPrice);
+        txtProductPrice.setText("₹ " + productPriceStr);
         txtProductDescription.setText(productDescription);
 
         // ✅ Load image from URL instead of resource ID
@@ -48,7 +50,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         btnAddToCart.setOnClickListener(v -> {
             Product product = new Product(productName, price, productDescription, productImage);
-            CartManager.addToCart(product);
+            CartManager.getInstance().addToCart(product);  // ✅ Corrected
             Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
         });
     }
