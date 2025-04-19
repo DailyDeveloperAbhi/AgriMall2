@@ -1,9 +1,6 @@
 package com.example.agrimall;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,14 +8,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class CheckoutActivity extends AppCompatActivity {
+import com.razorpay.Checkout;
+import com.razorpay.PaymentResultListener;
 
-    private final String UPI_ID = "8421726034@ybl"; // Replace with your UPI ID
-    private final String PAYEE_NAME = "AgriMall";
-    private final String TRANSACTION_NOTE = "Payment for AgriMall order";
+import org.json.JSONObject;
 
-    private String AMOUNT; // Dynamically assigned
+public class CheckoutActivity extends AppCompatActivity implements PaymentResultListener {
 
+    private String AMOUNT; // in paise
     private TextView tvTotalPrice;
     private EditText etName, etPhone, etAddress;
     private Button btnPlaceOrder;
@@ -27,6 +24,8 @@ public class CheckoutActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+
+        Checkout.preload(getApplicationContext());
 
         // Initialize views
         tvTotalPrice = findViewById(R.id.tv_total_price);
@@ -38,60 +37,57 @@ public class CheckoutActivity extends AppCompatActivity {
         // Get total price from intent
         int totalPrice = getIntent().getIntExtra("TOTAL_PRICE", 0);
         tvTotalPrice.setText("Total: ₹ " + totalPrice);
-        AMOUNT = String.valueOf(totalPrice);
+        AMOUNT = String.valueOf(totalPrice * 100); // Razorpay expects paise
 
-        // Handle Place Order button click
-        btnPlaceOrder.setOnClickListener(v -> makeUPIPayment());
+        // Start payment on button click
+        btnPlaceOrder.setOnClickListener(v -> startPayment());
     }
 
-    private void makeUPIPayment() {
-        Uri uri = Uri.parse("upi://pay?pa=" + UPI_ID +
-                "&pn=" + PAYEE_NAME +
-                "&mc=1234" +
-                "&tid=0123456789" +
-                "&tr=9876543210" +
-                "&tn=" + TRANSACTION_NOTE +
-                "&am=" + AMOUNT +
-                "&cu=INR");
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.setPackage("com.google.android.apps.nbu.paisa.user");  // Google Pay package
-
-        try {
-            startActivityForResult(intent, 1);
-        } catch (Exception e) {
-            Toast.makeText(this, "No UPI app found! Please install Google Pay or PhonePe.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (data != null) {
-                String response = data.getStringExtra("response");
-                if (response != null && response.toLowerCase().contains("success")) {
-                    Toast.makeText(this, "Payment Successful!", Toast.LENGTH_LONG).show();
-                    handleOrder(); // ✅ Only place the order after successful payment
-                } else {
-                    Toast.makeText(this, "Payment Failed!", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(this, "Payment Cancelled!", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private void handleOrder() {
+    private void startPayment() {
         String name = etName.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
 
         if (name.isEmpty() || phone.isEmpty() || address.isEmpty()) {
             Toast.makeText(this, "Please fill all details", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_LONG).show();
-            finish();  // Go back to previous screen
+            return;
         }
+
+        Checkout checkout = new Checkout();
+        checkout.setKeyID("rzp_test_IJUuv4ZM1Qs42V"); // Replace with your test key from Razorpay
+
+        try {
+            JSONObject options = new JSONObject();
+            options.put("name", "AgriMall");
+            options.put("description", "Order Payment");
+            options.put("currency", "INR");
+            options.put("amount", AMOUNT);
+
+            JSONObject prefill = new JSONObject();
+            prefill.put("email", "test@agrimall.com");
+            prefill.put("contact", phone);
+            options.put("prefill", prefill);
+
+            checkout.open(this, options);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Payment error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onPaymentSuccess(String razorpayPaymentID) {
+        Toast.makeText(this, "Payment Successful! ID: " + razorpayPaymentID, Toast.LENGTH_LONG).show();
+        handleOrder(); // Proceed after successful payment
+    }
+
+    @Override
+    public void onPaymentError(int code, String response) {
+        Toast.makeText(this, "Payment Failed: " + response, Toast.LENGTH_LONG).show();
+    }
+
+    private void handleOrder() {
+        Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_LONG).show();
+        finish();  // Go back to previous screen
     }
 }

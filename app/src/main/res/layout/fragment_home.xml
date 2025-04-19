@@ -69,6 +69,15 @@
             android:src="@android:drawable/ic_btn_speak_now"
             android:contentDescription="Voice Search"
             android:layout_marginStart="8dp"/>
+
+        <ImageButton
+            android:id="@+id/camera_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/baseline_photo_camera_24"
+            android:contentDescription="Camera Search"
+            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
     <!-- Free Consultation Banner -->
