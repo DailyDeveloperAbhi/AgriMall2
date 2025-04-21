@@ -156,4 +156,17 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
         bundle.putString("imageURL", product.getImageUrl());
         Navigation.findNavController(getView()).navigate(R.id.action_homeFragment_to_cartFragment, bundle);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!NetworkUti.isNetworkConnected(requireContext())) {
+            // Internet is OFF — go to No Internet Activity
+            Intent intent = new Intent(requireContext(), NoInternetActivity.class);
+            startActivity(intent);
+        }
+    }
+
+
 }
