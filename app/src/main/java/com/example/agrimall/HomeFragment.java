@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +13,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.navigation.Navigation;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
+
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,46 +36,67 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
     private EditText searchBar;
     private ImageButton micButton;
     private ImageView notificationIcon;
+
     private static final int REQUEST_CODE_SPEECH_INPUT = 100;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Initialize RecyclerView and its layout
+        // Initialize UI Elements
+        searchBar = view.findViewById(R.id.edtSearch);
+        micButton = view.findViewById(R.id.mic_button);
+        notificationIcon = view.findViewById(R.id.notification_icon);
+
         recyclerView = view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-        // Initialize Firestore and data list
-        db = FirebaseFirestore.getInstance();
         productList = new ArrayList<>();
         productAdapter = new ProductAdapter(productList, this);
         recyclerView.setAdapter(productAdapter);
 
-        // Initialize search bar and mic button
-        searchBar = view.findViewById(R.id.edtSearch);
-        micButton = view.findViewById(R.id.mic_button);
-        micButton.setOnClickListener(v -> startVoiceRecognition());
+        db = FirebaseFirestore.getInstance();
 
-        // Initialize notification icon and set click event
-        notificationIcon = view.findViewById(R.id.notification_icon);
-        notificationIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), PushNotification.class);
-            startActivity(intent);
+        // Search with text input
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s != null && !s.toString().trim().isEmpty()) {
+                    searchProductsInFirestore(s.toString());
+                } else {
+                    loadProductsFromFirestore();
+                }
+            }
+            @Override public void afterTextChanged(Editable s) {}
         });
 
-        // Button for calling directly
+        // Search with keyboard action
+        searchBar.setOnEditorActionListener((v, actionId, event) -> {
+            String keyword = searchBar.getText().toString().trim();
+            if (!keyword.isEmpty()) {
+                searchProductsInFirestore(keyword);
+            } else {
+                Toast.makeText(getContext(), "Enter keyword to search", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        });
+
+        // Voice search
+        micButton.setOnClickListener(v -> startVoiceRecognition());
+
+        // Notification icon
+        notificationIcon.setOnClickListener(v -> startActivity(new Intent(getActivity(), PushNotification.class)));
+
+        // Call now button
         view.findViewById(R.id.btnCallNow).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:+918421726034"));
             startActivity(intent);
         });
 
-        // Load products from Firestore
         loadProductsFromFirestore();
-
         return view;
     }
 
@@ -97,76 +118,70 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
         if (requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == getActivity().RESULT_OK && data != null) {
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             if (result != null && !result.isEmpty()) {
-                String recognizedText = result.get(0);
-                searchBar.setText(recognizedText); // Set text in search bar
-                filterProducts(recognizedText);    // Filter products based on search query
+                String keyword = result.get(0);
+                searchBar.setText(keyword);
+                searchProductsInFirestore(keyword);
             }
         }
     }
 
-    // Function to filter products based on query
-    private void filterProducts(String query) {
-        List<Product> filteredList = new ArrayList<>();
-        for (Product product : productList) {
-            if (product.getName().toLowerCase().contains(query.toLowerCase())) {
-                filteredList.add(product);
-            }
-        }
-        productAdapter.updateList(filteredList); // Update RecyclerView with filtered list
+    // 🔍 Case-insensitive search logic (local filtering)
+    private void searchProductsInFirestore(String keyword) {
+        String keywordLower = keyword.toLowerCase();
+
+        db.collection("products")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        productList.clear();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            String name = doc.getString("name");
+                            double price = doc.getDouble("price");
+                            String description = doc.getString("description");
+                            String imageUrl = doc.getString("imageURL");
+
+                            if (name != null && name.toLowerCase().contains(keywordLower)) {
+                                productList.add(new Product(name, (int) price, description, imageUrl));
+                            }
+                        }
+
+                        if (productList.isEmpty()) {
+                            Toast.makeText(getContext(), "No matching products found!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        productAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(), "Search failed!", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
+    // 🔄 Load all products from Firestore
     private void loadProductsFromFirestore() {
-        CollectionReference productsRef = db.collection("products");
-        productsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Toast.makeText(getContext(), "Error loading products", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                productList.clear();
-                for (QueryDocumentSnapshot doc : value) {
-                    String name = doc.getString("name");
-                    double price = doc.getDouble("price");
-                    String description = doc.getString("description");
-                    String imageUrl = doc.getString("imageURL");
-                    productList.add(new Product(name, (int) price, description, imageUrl));
-                }
-                productAdapter.notifyDataSetChanged();
+        db.collection("products").addSnapshotListener((value, error) -> {
+            if (error != null || value == null) {
+                Toast.makeText(getContext(), "Error loading products", Toast.LENGTH_SHORT).show();
+                return;
             }
+            productList.clear();
+            for (QueryDocumentSnapshot doc : value) {
+                String name = doc.getString("name");
+                double price = doc.getDouble("price");
+                String description = doc.getString("description");
+                String imageUrl = doc.getString("imageURL");
+                productList.add(new Product(name, (int) price, description, imageUrl));
+            }
+            productAdapter.notifyDataSetChanged();
         });
     }
 
     @Override
     public void onProductClick(Product product) {
-        Bundle bundle = new Bundle();
-        bundle.putString("name", product.getName());
-        bundle.putInt("price", product.getPrice());
-        bundle.putString("description", product.getDescription());
-        bundle.putString("imageURL", product.getImageUrl());
-        Navigation.findNavController(getView()).navigate(R.id.action_homeFragment_to_cartFragment, bundle);
+        // Handle product click if needed
     }
 
     @Override
     public void onAddToCart(Product product) {
-        Bundle bundle = new Bundle();
-        bundle.putString("name", product.getName());
-        bundle.putDouble("price", product.getPrice());
-        bundle.putString("description", product.getDescription());
-        bundle.putString("imageURL", product.getImageUrl());
-        Navigation.findNavController(getView()).navigate(R.id.action_homeFragment_to_cartFragment, bundle);
+        // Handle Add to Cart if needed
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (!NetworkUti.isNetworkConnected(requireContext())) {
-            // Internet is OFF — go to No Internet Activity
-            Intent intent = new Intent(requireContext(), NoInternetActivity.class);
-            startActivity(intent);
-        }
-    }
-
-
 }

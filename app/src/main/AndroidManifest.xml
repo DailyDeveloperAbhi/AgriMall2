@@ -26,10 +26,6 @@
         android:theme="@style/Theme.AgriMall"
         tools:targetApi="31">
         <activity
-            android:name=".NoInternetActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AgriMall" />
-        <activity
             android:name=".PushNotification"
             android:exported="false" />
         <activity

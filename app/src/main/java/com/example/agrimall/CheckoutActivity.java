@@ -1,25 +1,27 @@
 package com.example.agrimall;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentResultListener;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class CheckoutActivity extends AppCompatActivity {
-
-    private final String UPI_ID = "8421726034@ybl";
-    private final String PAYEE_NAME = "AgriMall";
-    private final String TRANSACTION_NOTE = "Payment for AgriMall order";
+public class CheckoutActivity extends AppCompatActivity implements PaymentResultListener {
 
     private String AMOUNT;
     private TextView tvTotalPrice;
@@ -31,20 +33,65 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
+        Checkout.preload(getApplicationContext());
+
+        // Initialize views
         tvTotalPrice = findViewById(R.id.tv_total_price);
         etName = findViewById(R.id.et_name);
         etPhone = findViewById(R.id.et_phone);
         etAddress = findViewById(R.id.et_address);
         btnPlaceOrder = findViewById(R.id.btn_place_order);
 
+        // Get total price from intent
         int totalPrice = getIntent().getIntExtra("TOTAL_PRICE", 0);
         tvTotalPrice.setText("Total: ₹ " + totalPrice);
-        AMOUNT = String.valueOf(totalPrice);
+        AMOUNT = String.valueOf(totalPrice * 100);
 
-        btnPlaceOrder.setOnClickListener(v -> {
-            // 🔥 Skip payment for now, directly save for testing
-            handleOrder();  // call this to save in Firestore
-        });
+        // Start payment on button click
+        btnPlaceOrder.setOnClickListener(v -> startPayment());
+    }
+
+    private void startPayment() {
+        String name = etName.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
+
+        if (name.isEmpty() || phone.isEmpty() || address.isEmpty()) {
+            Toast.makeText(this, "Please fill all details", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Checkout checkout = new Checkout();
+        checkout.setKeyID("rzp_test_IJUuv4ZM1Qs42V");
+
+        try {
+            JSONObject options = new JSONObject();
+            options.put("name", "AgriMall");
+            options.put("description", "Order Payment");
+            options.put("currency", "INR");
+            options.put("amount", AMOUNT);
+
+            JSONObject prefill = new JSONObject();
+            prefill.put("email", "test@agrimall.com");
+            prefill.put("contact", phone);
+            options.put("prefill", prefill);
+
+            checkout.open(this, options);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Payment error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onPaymentSuccess(String razorpayPaymentID) {
+        Toast.makeText(this, "Payment Successful! ID: " + razorpayPaymentID, Toast.LENGTH_LONG).show();
+        handleOrder(); // Proceed after successful payment
+    }
+
+    @Override
+    public void onPaymentError(int code, String response) {
+        Toast.makeText(this, "Payment Failed: " + response, Toast.LENGTH_LONG).show();
     }
 
     private void handleOrder() {
@@ -90,7 +137,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 .add(orderData)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, "Order Saved in Firebase!", Toast.LENGTH_LONG).show();
-                    CartManager.getInstance().clearCart(); // optional
                     finish();
                 })
                 .addOnFailureListener(e -> {
