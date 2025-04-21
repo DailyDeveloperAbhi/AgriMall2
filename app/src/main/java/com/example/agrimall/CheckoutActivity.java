@@ -1,21 +1,27 @@
 package com.example.agrimall;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.razorpay.Checkout;
-import com.razorpay.PaymentResultListener;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-import org.json.JSONObject;
+public class CheckoutActivity extends AppCompatActivity {
 
-public class CheckoutActivity extends AppCompatActivity implements PaymentResultListener {
+    private final String UPI_ID = "8421726034@ybl";
+    private final String PAYEE_NAME = "AgriMall";
+    private final String TRANSACTION_NOTE = "Payment for AgriMall order";
 
-    private String AMOUNT; // in paise
+    private String AMOUNT;
     private TextView tvTotalPrice;
     private EditText etName, etPhone, etAddress;
     private Button btnPlaceOrder;
@@ -25,25 +31,23 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        Checkout.preload(getApplicationContext());
-
-        // Initialize views
         tvTotalPrice = findViewById(R.id.tv_total_price);
         etName = findViewById(R.id.et_name);
         etPhone = findViewById(R.id.et_phone);
         etAddress = findViewById(R.id.et_address);
         btnPlaceOrder = findViewById(R.id.btn_place_order);
 
-        // Get total price from intent
         int totalPrice = getIntent().getIntExtra("TOTAL_PRICE", 0);
         tvTotalPrice.setText("Total: ₹ " + totalPrice);
-        AMOUNT = String.valueOf(totalPrice * 100); // Razorpay expects paise
+        AMOUNT = String.valueOf(totalPrice);
 
-        // Start payment on button click
-        btnPlaceOrder.setOnClickListener(v -> startPayment());
+        btnPlaceOrder.setOnClickListener(v -> {
+            // 🔥 Skip payment for now, directly save for testing
+            handleOrder();  // call this to save in Firestore
+        });
     }
 
-    private void startPayment() {
+    private void handleOrder() {
         String name = etName.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
@@ -53,41 +57,44 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
             return;
         }
 
-        Checkout checkout = new Checkout();
-        checkout.setKeyID("rzp_test_IJUuv4ZM1Qs42V"); // Replace with your test key from Razorpay
+        // ✅ Firestore instance
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        try {
-            JSONObject options = new JSONObject();
-            options.put("name", "AgriMall");
-            options.put("description", "Order Payment");
-            options.put("currency", "INR");
-            options.put("amount", AMOUNT);
+        // 📝 Order map
+        Map<String, Object> orderData = new HashMap<>();
+        orderData.put("fullName", name);
+        orderData.put("phone", phone);
+        orderData.put("address", address);
+        orderData.put("totalAmount", AMOUNT);
+        orderData.put("timestamp", new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
 
-            JSONObject prefill = new JSONObject();
-            prefill.put("email", "test@agrimall.com");
-            prefill.put("contact", phone);
-            options.put("prefill", prefill);
+        // 🛒 Add cart items
+        List<CartItem> cartItems = CartManager.getInstance().getCartItems();
+        List<Map<String, Object>> productList = new ArrayList<>();
 
-            checkout.open(this, options);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Payment error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        for (CartItem item : cartItems) {
+            Map<String, Object> product = new HashMap<>();
+            product.put("name", item.getProductName());
+            product.put("price", item.getProductPrice());
+            product.put("quantity", item.getQuantity());
+            product.put("total", item.getTotalPrice());
+            product.put("image", item.getProductImage());
+            product.put("status", "delivered"); // for test purpose
+            productList.add(product);
         }
-    }
 
-    @Override
-    public void onPaymentSuccess(String razorpayPaymentID) {
-        Toast.makeText(this, "Payment Successful! ID: " + razorpayPaymentID, Toast.LENGTH_LONG).show();
-        handleOrder(); // Proceed after successful payment
-    }
+        orderData.put("products", productList);
 
-    @Override
-    public void onPaymentError(int code, String response) {
-        Toast.makeText(this, "Payment Failed: " + response, Toast.LENGTH_LONG).show();
-    }
-
-    private void handleOrder() {
-        Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_LONG).show();
-        finish();  // Go back to previous screen
+        // 📤 Save to Firestore collection "orders"
+        db.collection("orders")
+                .add(orderData)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Order Saved in Firebase!", Toast.LENGTH_LONG).show();
+                    CartManager.getInstance().clearCart(); // optional
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to save order", Toast.LENGTH_LONG).show();
+                });
     }
 }

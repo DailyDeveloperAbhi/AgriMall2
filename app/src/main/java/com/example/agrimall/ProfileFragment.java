@@ -93,7 +93,7 @@ public class ProfileFragment extends Fragment {
 
         // WhatsApp Click Event
         btnWhatsApp.setOnClickListener(v -> {
-            String phoneNumber = "7499876327"; // Replace with your WhatsApp number
+            String phoneNumber = "9096339368"; // Replace with your WhatsApp number
             String url = "https://wa.me/" + phoneNumber;
             openUrl(url);
         });

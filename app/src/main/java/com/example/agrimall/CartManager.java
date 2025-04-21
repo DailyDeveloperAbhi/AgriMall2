@@ -8,7 +8,8 @@ public class CartManager {
     private static CartManager instance;
     private List<CartItem> cartItems;
 
-    private CartManager() {  // ✅ Constructor should be private (Singleton)
+    // ✅ Singleton Constructor
+    private CartManager() {
         cartItems = new ArrayList<>();
     }
 
@@ -19,14 +20,16 @@ public class CartManager {
         return instance;
     }
 
+    // ✅ Get all cart items
     public List<CartItem> getCartItems() {
         return cartItems;
     }
 
+    // ✅ Add item to cart
     public void addToCart(Product product) {
         for (CartItem cartItem : cartItems) {
             if (cartItem.getProductName().equals(product.getName())) {
-                cartItem.setQuantity(cartItem.getQuantity() + 1);  // ✅ Increase quantity if exists
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
                 Log.d("CartManager", "Increased quantity: " + cartItem.getProductName());
                 return;
             }
@@ -36,11 +39,13 @@ public class CartManager {
         Log.d("CartManager", "Added to cart: " + newItem.getProductName());
     }
 
+    // ✅ Remove item from cart
     public void removeItem(CartItem item) {
         cartItems.remove(item);
         Log.d("CartManager", "Removed from cart: " + item.getProductName());
     }
 
+    // ✅ Increase quantity
     public void increaseQuantity(CartItem item) {
         for (CartItem cartItem : cartItems) {
             if (cartItem.getProductName().equals(item.getProductName())) {
@@ -51,6 +56,7 @@ public class CartManager {
         }
     }
 
+    // ✅ Decrease quantity or remove if 1
     public void decreaseQuantity(CartItem item) {
         for (CartItem cartItem : cartItems) {
             if (cartItem.getProductName().equals(item.getProductName())) {
@@ -63,5 +69,11 @@ public class CartManager {
                 return;
             }
         }
+    }
+
+    // ✅ Clear entire cart after order
+    public void clearCart() {
+        cartItems.clear();
+        Log.d("CartManager", "Cart cleared successfully");
     }
 }
