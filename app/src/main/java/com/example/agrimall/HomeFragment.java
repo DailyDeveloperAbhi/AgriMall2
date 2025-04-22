@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,9 +21,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +40,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
     private EditText searchBar;
     private ImageButton micButton;
     private ImageView notificationIcon;
+    TextView txtWelcome;
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 100;
 
@@ -50,13 +55,33 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
         searchBar = view.findViewById(R.id.edtSearch);
         micButton = view.findViewById(R.id.mic_button);
         notificationIcon = view.findViewById(R.id.notification_icon);
-
+        txtWelcome=view.findViewById(R.id.txtWelcome);
         recyclerView = view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         productList = new ArrayList<>();
         productAdapter = new ProductAdapter(productList, this);
         recyclerView.setAdapter(productAdapter);
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String uid = user.getUid();
+
+            FirebaseFirestore.getInstance().collection("users")
+                    .document(uid)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String fullName = documentSnapshot.getString("name");
+                            if (fullName != null && !fullName.isEmpty()) {
+                                String firstName = fullName.split(" ")[0];  // get first word
+                                txtWelcome.setText("Hi " + firstName + "! 👋");
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to load user data", Toast.LENGTH_SHORT).show();
+                    });
+        }
         db = FirebaseFirestore.getInstance();
 
         // Search with text input

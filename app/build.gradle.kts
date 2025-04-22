@@ -59,8 +59,7 @@ dependencies {
     implementation( "com.google.gms:google-services:4.3.10")
     implementation("com.squareup.picasso:picasso:2.71828")
     implementation ("com.razorpay:checkout:1.6.33")
-
-
+    implementation ("com.github.bumptech.glide:glide:4.13.0")
 
 
 
