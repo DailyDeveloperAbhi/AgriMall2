@@ -39,7 +39,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
     private FirebaseFirestore db;
     private EditText searchBar;
     private ImageButton micButton;
-    private ImageView notificationIcon;
+
     TextView txtWelcome;
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 100;
@@ -54,7 +54,6 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
         // Initialize UI Elements
         searchBar = view.findViewById(R.id.edtSearch);
         micButton = view.findViewById(R.id.mic_button);
-        notificationIcon = view.findViewById(R.id.notification_icon);
         txtWelcome=view.findViewById(R.id.txtWelcome);
         recyclerView = view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -111,8 +110,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.OnProductCl
         // Voice search
         micButton.setOnClickListener(v -> startVoiceRecognition());
 
-        // Notification icon
-        notificationIcon.setOnClickListener(v -> startActivity(new Intent(getActivity(), PushNotification.class)));
+
 
         // Call now button
         view.findViewById(R.id.btnCallNow).setOnClickListener(v -> {
